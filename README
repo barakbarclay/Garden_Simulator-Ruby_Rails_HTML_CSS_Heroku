@@ -1,0 +1,115 @@
+To run locally, run: 
+cd /projects/group10_spring2019 && rails server -b 0.0.0.0
+
+Heroku link:
+http://garden-simulator.herokuapp.com/
+
+Other Heroku link:
+http://garden-simulator-2.herokuapp.com/
+
+Other other Heroku link:
+http://garden-simulator2.herokuapp.com/
+
+----------
+File Structure
+ - plot.coffe (color handler)
+ - deafault.css (view templates)
+ - plots_controller.rb (primary logic controller)
+ - application.html.erm (interacts with the "default.css" to build view of everything (except the plot buttons))
+ - [views > plots] index.html.erb (creates all views for plots themselves)
+ - routes.rb (controlls the path of what the user sees while interacting)
+ - [db > migrate]
+	- ***_create_plants_controllers.rb (creates the layout for the fields of the plant data in the DB)
+	- ***_create_plots.rb (creates the layout for the plot information being presented)
+ - seeds.rb (initializes the attributes of the elements in the DB)
+ - "Features File" (tests)
+----------
+How to Heroku:
+
+To login:
+heroku login
+
+To open app:
+heroku open
+
+To check what your remote is set to:
+git remote -v
+
+To switch heroku remotes (to garden-simulator-2, for example):
+git remote set-url heroku https://git.heroku.com/garden-simulator-2.git
+
+To push changes to heroku from your master branch:
+Make sure changes are committed first.
+git push heroku master
+
+To push changes to heroku from a non-master branch (doug_iter42, for example):
+git push heroku doug_iter42:master
+
+To reset the Heroku database:
+heroku pg:reset     (also use with caution)
+heroku run rake db:migrate
+heroku run rake db:seed
+
+To view heroku database:
+heroku pg:psql
+Then, to see the plots table, for example:
+SELECT * FROM plots;
+
+If Heroku CSS is refusing to update but it's working locally:
+bundle exec rake assets:precompile
+git add .
+git commit -m "Magically fixing Heroku"
+git push heroku master
+
+----------
+Git notes:
+Branching and merging: https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging
+
+----------
+Database notes:
+
+To view local database in the command line:
+rails db
+.headers on
+.mode columns
+.table
+
+To totally reset database (perhaps after a big merge):
+rake db:drop     (this erases the db, so use with caution)
+rake db:create
+rake db:migrate
+rake db:seed
+
+----------
+Testing notes:
+
+Prepping database for testing: 
+rake db:migrate db:test:prepare
+
+If you get an ambiguity-related error with Cucumber, change some definition language
+until it's not ambiguous. Apparently--and annoyingly--Cucumber doesn't like identical
+step definition names, even across features. So you'll probably have to change your
+"Given I am in my garden" text, for example, til it works.
+
+Basic Capybara functions, selectors, and using it with Rspec:
+https://www.sitepoint.com/basics-capybara-improving-tests/
+
+To test some specific page element (like a particular plot), do something like:
+find("#plotid").click
+
+----------
+Installing pg gem
+
+To install the pg gem onto your local machine:
+
+sudo apt-get update
+sudo apt-get upgrade (I believe upgrade will ask you something that says y/n, just enter y for yes)
+sudo apt-get install libpq-dev (Might take awhile)
+bundle install --with production
+This should properly install the pg gem
+
+----------
+To create a controller using a command:
+rails g controller nameOfController (Just whatever you want to name the controller)
+Note: The generated controller will automatically add controller to the name of the file.
+So if you write this_controller as the name of the controller, the generated controller will be this_controller_controller

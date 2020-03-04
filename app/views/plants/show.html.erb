@@ -1,0 +1,48 @@
+<% # in app/views/plants/show.html.erb %>
+<h1>All Plants</h1>
+<table id="plants">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Min Water Level</th>
+      <th>Max Water Level</th>
+      <th>Water Level Decrease Time(s)[N/A]</th>
+      <th>Harvest Time(s)</th>
+      <th>Harvest Amount (Gold)</th>
+      <th>Description</th>
+      <th>Cost (Gold)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @plants.each do |plant| %>
+      <tr>
+        <td>
+          <%= plant.name  %>
+        </td>
+        <td style="text-align: center; vertical-align: middle;">
+          <%= plant.minWater %>
+        </td>
+        <td style="text-align: center; vertical-align: middle;">
+          <%= plant.maxWater %>
+        </td>
+        <td style="text-align: center; vertical-align: middle;">
+          <%= plant.secondsWaterTakesToDecreaseOneLevel %>
+        </td>
+        <td style="text-align: center; vertical-align: middle;">
+          <%= plant.harvestTime %>
+        </td>
+        <td style="text-align: center; vertical-align: middle;">
+          <%= plant.harvestGold %>
+        </td>
+        <td>
+          <%= plant.description %>
+        </td>
+        <td style="text-align: center; vertical-align: middle;">
+          <%= plant.cost %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Back', plots_path %>

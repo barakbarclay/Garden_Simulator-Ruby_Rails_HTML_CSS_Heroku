@@ -39,4 +39,8 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+  
+  # BAD CODE!!!!!!!!!!!!!!!!!!!!!!!!
+  # TODO: Robert says: I commented this out. Now rspec works. Woot.
+  #config.web_console.development_only = false
 end

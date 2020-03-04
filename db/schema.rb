@@ -11,13 +11,48 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150809022253) do
+ActiveRecord::Schema.define(version: 20190407214011) do
 
-  create_table "movies", force: :cascade do |t|
-    t.string   "title"
-    t.string   "rating"
+  create_table "plants", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "minWater"
+    t.integer  "maxWater"
     t.text     "description"
-    t.datetime "release_date"
+    t.integer  "cost"
+    t.integer  "harvestTime"
+    t.integer  "harvestGold"
+    t.integer  "secondsWaterTakesToDecreaseOneLevel"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "plots", force: :cascade do |t|
+    t.string   "plantName"
+    t.string   "category"
+    t.string   "buttonBGColor"
+    t.string   "readyToHarvest"
+    t.integer  "water"
+    t.integer  "maxWater"
+    t.integer  "minWater"
+    t.integer  "secondsWaterTakesToDecreaseOneLevel"
+    t.float    "timeSinceLastWaterLevelDecrease"
+    t.float    "timePlanted"
+    t.integer  "timeNeededBeforeHarvest"
+    t.integer  "harvestTime"
+    t.integer  "harvestGold"
+    t.integer  "cost"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string   "name"
+    t.string   "email"
+    t.string   "password"
+    t.integer  "gold"
+    t.integer  "currentPlotSelected"
+    t.integer  "currentPlantSelected"
+    t.boolean  "isPlanting"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

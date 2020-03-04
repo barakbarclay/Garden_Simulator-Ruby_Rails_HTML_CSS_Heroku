@@ -1,9 +1,11 @@
 Rails.application.routes.draw do
+  get 'sessions/new'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'movies#index'
+  root :to => 'sessions#new'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
@@ -14,7 +16,25 @@ Rails.application.routes.draw do
   # Example resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 
-  resources :movies
+  resources :plants 
+  resources :plots do
+    member do
+     put :plant
+     put :harvest
+     put :buyPlot
+     put :buyPlant
+     put :exitPlantShop
+     put :water
+     put :refreshAttributes
+    end
+  end
+  resources :users
+  
+  put '/buyPlot' => 'plots#buyPlot'
+  put '/buyPlant' => 'plots#buyPlant'
+  
+  
+  get '/show' => 'plants#show'
   
   # Example resource route with options:
   #   resources :products do
@@ -55,4 +75,11 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+  
+  get       '/signup',  to: 'users#new'
+  get       '/login',   to: 'sessions#new'
+  post      '/signup',  to: 'sessions#create'
+  post      '/login',   to: 'sessions#create'
+  resources :users
+  
 end

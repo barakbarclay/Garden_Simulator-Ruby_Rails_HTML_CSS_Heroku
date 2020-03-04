@@ -1,0 +1,162 @@
+<!––PLOT HTML––>
+<% # in app/views/plants/index.html.erb %>
+<div class = "container">
+<ul>
+  <li><a>User: <%= User.first.name %></a><li>
+  <li><a>Garden A</a></li>
+  <li><a>Weather: <%= if Time.now.hour < 12; "Rainy" else "Sunny" end %></a></li>
+  <li style="float:right">
+  <%= link_to "Buy Gold", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", data: { confirm: "Are you sure?" }, class: 'li' %></li>
+  <li style="float:right">
+  <a>Gold: <%= User.first.gold %></a></li>
+</ul> 
+</div>
+<%= button_to 'Plant Database', plants_path + '/show', :method => "get" %>
+<%= yield %>
+
+
+<!––PLOTS––>
+<% if User.first.isPlanting == false %>
+<script>
+function autoSubmit()
+{
+    var formObject = document.forms['formToSelectPlot'];
+    formObject.submit();
+}
+</script>
+<form name='formToSelectPlot' action = "/plots">
+<div>&nbsp Current Selected Plot: <%= @plotSelected %></div>
+<div>&nbsp Current Selected Plant: <%= @plantSelected %></div>
+<div class="plot">
+  <div class="plot-keys">
+    <% @plots.each do |plot| %>  
+    <div class=<%= 
+        case plot.category
+        when "Unowned"
+            "unownedPlot"
+        when "Empty"
+            "emptyPlot"
+        when "Planted"
+            "plantedPlot"
+        when "Dead"
+            "deadPlot"
+        else
+            "wateredPlot"
+        end
+        %>>
+        
+       <div>&nbsp Select Plot <%= plot.id%>:<%= radio_button_tag(:plotSelected, plot.id.to_s, (plot.id == @plotSelected.to_i),:onclick=>"autoSubmit();") %></div>
+       <% if plot.category != "Planted" && plot.category != "Dead"%>
+         <div>&nbsp Plot State: <%= plot.category %></div>
+       <% end %>
+       <% if plot.category != "Unowned" && plot.category != "Empty" %>
+         <div>&nbsp Plant Name: <%= plot.plantName %></div>
+         <% if plot.category != "Dead" %>
+           <div>&nbsp Plant State: Alive </div>
+           <div>&nbsp Living Water Range: <%= plot.minWater%> to <%= plot.maxWater%></div>
+           <div>&nbsp Current Water Level: <%= plot.water%></div>
+           <% if plot.timeNeededBeforeHarvest > 0 %>
+             <div>&nbsp Time needed to Harvest: <%= plot.timeNeededBeforeHarvest%></div>
+           <% else %>  
+             <div>&nbsp Ready to Harvest (<%= plot.harvestGold%> gold)</div>
+           <% end %>
+         <% else %>
+           <div>&nbsp Plant State: Dead </div>
+           <div>&nbsp Click "Harvest" to remove plant </div>
+         <% end %>
+       <% end %>
+       
+    </div>
+    <% end %>
+  </div>
+</div>
+<% end %>
+<!––PLOTS END––>
+</form>
+
+
+
+
+
+
+
+<!––PLANT SHOP––>
+<% if User.first.isPlanting == true %>
+<script>
+function autoSubmitPlant()
+{
+    var formObject = document.forms['formToSelectPlot'];
+    formObject.submit();
+}
+</script>
+<form name='formToSelectPlot' action = "/plots">
+<div>&nbsp Current Selected Plot: <%= @plotSelected %></div>
+<div>&nbsp Current Selected Plant: <%= @plantSelected %></div>
+<div class="plot">
+  <div class="plot-keys">
+    <% Plant.all.each do |plant| %>  
+    <div class=<%= "plantShop" %>>
+        
+       <div>&nbsp Select Radio Button <%= plant.id%>:<%= radio_button_tag(:plantSelected, plant.id.to_s, (plant.id == @plantSelected.to_i),:onclick=>"autoSubmitPlant();") %></div>
+       
+       <div>&nbsp Plant Name: <%= plant.name %></div>
+       <div>&nbsp Price: <%= plant.cost %> gold</div>
+       <div>&nbsp Living Water Range: <%= plant.minWater %> to <%= plant.maxWater %></div>
+       <div>&nbsp Harvest Time: <%= plant.harvestTime %>  </div>
+       <div>&nbsp Harvest Gold: <%= plant.harvestGold %></div>
+       
+    </div>
+    <% end %>
+  </div>
+</div>
+<% end %>
+<!––PLANT SHOP END––>
+</form>
+
+
+
+
+
+
+
+<div class="footer"> 
+  <% @plots.each do |plot| %> 
+    <% if plot.id == @plotSelected.to_i %>
+    
+      <% if plot.category == "Unowned" %>
+        <%= link_to "Buy Plot", plots_path + '/' + @plotSelected + '/buyPlot', data: {method: "put", remote: true}, class: 'action', :action => :buyPlot %>
+      <% end %>
+    
+      <% if plot.category == "Empty" && User.first.isPlanting == false %>
+        <%= link_to "Buy Plant", plots_path + '/' + @plotSelected + '/buyPlant', data: {method: "put", remote: true}, class: 'action', :action => :buyPlant %>
+      <% end %> 
+      
+      <% if User.first.isPlanting == true %>
+        <%= link_to "Plant", plots_path + '/' + @plotSelected + '/plant', data: {method: "put", remote: true}, class: 'action', :action => :plant %>
+        <%= link_to "Exit Plant Shop", plots_path + '/' + @plotSelected + '/exitPlantShop', data: {method: "put", remote: true}, class: 'action', :action => :exitPlantShop %>
+      <% end %>
+      
+      <% if plot.category == "Planted" %>
+        <%= link_to "Water", plots_path + '/' + @plotSelected + '/water', data: {method: "put", remote: true}, class: 'action', :action => :water %>
+      <% end %>
+      
+      <% if plot.category == "Planted" %>
+        <%= link_to "Refresh Attributes", plots_path + '/' + @plotSelected + '/refreshAttributes', data: {method: "put", remote: true}, class: 'action', :action => :refreshAttributes %>
+      <% end %>
+      
+      <% if plot.readyToHarvest == "Yes" or plot.category == "Dead" %>
+        <%= link_to "Harvest", plots_path + '/' + @plotSelected + '/harvest', data: {method: "put", remote: true}, class: 'action', :action => :harvest %>
+      <% elsif plot.category == "Planted" %> 
+        <%= link_to "Harvest", plots_path + '/' + @plotSelected + '/harvest', data: {method: "put", remote: true}, class: 'notAllowedAction', :action => :harvest %>
+      <% end %>
+      
+    <% end %>
+  <% end %>
+</div>
+
+
+<% if flash[:notice] %> 
+<b href><div id="notice" class="message"><%= flash[:notice] %></div></b>
+<% elsif flash[:warning] %> 
+<b href><div id="warning" class="message"><%= flash[:warning] %></div></b>
+<% end %>
